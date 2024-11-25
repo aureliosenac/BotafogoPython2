@@ -1,0 +1,4 @@
+[
+    {"nome": "Alice","idade": 30,"cargo": "Analista"},
+    {"nome": "Bob","idade": 25,"cargo": "Desenvolvedor","etnia":"Branco"}
+]
