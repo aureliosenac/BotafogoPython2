@@ -1,0 +1,22 @@
+-No terminal-
+
+1. django-admin startproject techNova
+2. cd techNova
+3. python manage.py startapp core
+
+-No VSCode aplicativo padrão 'techNova'-
+4. adicionar 'core' no INSTALLED_APPS do settings.py
+5. adicionar o path para o core.urls -> path('', include('core.urls')) <-
+(não esquecer do import do include)
+
+-No VSCode aplicativo 'core'-
+6. criar a pasta templates
+7. criar o arquivo urls.py
+8. criar os arquivos de template dentro da pasta templates (sobre, contato, home, servicos, cursos)
+9. criar funções para requisições do arquivo views.py, a fim de conectar os templates com o projeto:
+	def home(request):
+    		return render(request, 'home.html')
+	...
+10.Criar, no urls.py, as endpoints para cada uma das funções do views.py
+
+11. Preencher os templates com código HTML
