@@ -1,0 +1,265 @@
+Claro! Vou te dar um exemplo básico de como criar um modelo no Django (em `models.py`) para servir de base de dados, e também um formulário HTML simples para capturar os dados e gravá-los no banco.
+
+### Passo 1: Criando o Modelo no Django
+
+Primeiro, vamos criar um modelo no arquivo `models.py`, que representa um objeto a ser salvo no banco de dados. Vamos criar um modelo simples de "Pessoa", com campos como nome e idade.
+
+```python
+# models.py
+from django.db import models
+
+class Pessoa(models.Model):
+    nome = models.CharField(max_length=100)
+    idade = models.IntegerField()
+
+    def __str__(self):
+        return self.nome
+```
+
+### Passo 2: Criando o Formulário em Django
+
+Agora, vamos criar um formulário para capturar os dados de entrada. Para isso, vamos usar o Django forms, que facilita a criação de formulários.
+
+Crie um arquivo chamado `forms.py` na sua aplicação e defina o formulário da seguinte maneira:
+
+```python
+# forms.py
+from django import forms
+from .models import Pessoa
+
+class PessoaForm(forms.ModelForm):
+    class Meta:
+        model = Pessoa
+        fields = ['nome', 'idade']
+```
+
+### Passo 3: Criando a View
+
+Agora, vamos criar uma view para processar o formulário e salvar os dados no banco. Essa view será responsável por renderizar o formulário e também por salvar as informações após o envio.
+
+```python
+# views.py
+from django.shortcuts import render, redirect
+from .forms import PessoaForm
+
+def adicionar_pessoa(request):
+    if request.method == 'POST':
+        form = PessoaForm(request.POST)
+        if form.is_valid():
+            form.save()  # Salva o objeto no banco de dados
+            return redirect('sucesso')  # Redireciona após salvar
+    else:
+        form = PessoaForm()
+
+    return render(request, 'adicionar_pessoa.html', {'form': form})
+```
+
+### Passo 4: Criando a URL
+
+Agora, precisamos mapear a URL para a view que acabamos de criar. Para isso, adicione a seguinte URL em seu arquivo `urls.py`.
+
+```python
+# urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('adicionar/', views.adicionar_pessoa, name='adicionar_pessoa'),
+    path('sucesso/', views.sucesso, name='sucesso'),
+]
+```
+
+### Passo 5: Criando o Template HTML
+
+Agora, vamos criar o template HTML para o formulário. Crie um arquivo chamado `adicionar_pessoa.html` na pasta `templates`.
+
+```html
+<!-- adicionar_pessoa.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Pessoa</title>
+</head>
+<body>
+    <h1>Adicionar Pessoa</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+    </form>
+</body>
+</html>
+```
+
+### Passo 6: Criando a View de Sucesso
+
+Você também pode criar uma view simples para exibir uma mensagem de sucesso após o envio do formulário.
+
+```python
+# views.py
+def sucesso(request):
+    return render(request, 'sucesso.html')
+```
+
+E crie o template de sucesso:
+
+```html
+<!-- sucesso.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sucesso</title>
+</head>
+<body>
+    <h1>Dados salvos com sucesso!</h1>
+</body>
+</html>
+```
+
+### Passo 7: Aplicando as Migrações
+
+Para que o modelo funcione corretamente e seja criado no banco de dados, você precisa rodar as migrações do Django.
+
+No terminal, execute:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### Resultado
+
+Com tudo isso configurado, você terá um formulário HTML onde pode adicionar pessoas (nome e idade), e esses dados serão salvos no banco de dados.
+
+O processo é o seguinte:
+1. O formulário é renderizado na página `adicionar_pessoa.html`.
+2. Quando o usuário envia o formulário, a view processa e salva as informações no banco de dados.
+3. Após o envio bem-sucedido, o usuário é redirecionado para a página de sucesso (`sucesso.html`).
+
+Isso é apenas um exemplo básico. Você pode expandir isso com mais campos e validações, conforme necessário.
+
+Sim, exatamente! Vou te guiar com mais detalhes sobre onde colocar cada arquivo dentro do seu projeto Django.
+
+Se você criou um projeto chamado `projeto1` e uma aplicação chamada `core`, a estrutura de diretórios do seu projeto deverá ser mais ou menos assim:
+
+```
+projeto1/
+    ├── projeto1/          # Diretório do projeto (configurações)
+    │   ├── __init__.py
+    │   ├── settings.py    # Arquivo de configurações do projeto
+    │   ├── urls.py        # URLs do projeto
+    │   └── wsgi.py
+    └── core/               # Sua aplicação "core"
+        ├── migrations/     # Diretório de migrações
+        ├── __init__.py
+        ├── admin.py
+        ├── apps.py
+        ├── models.py       # Aqui está o modelo Pessoa
+        ├── views.py        # Aqui ficam as views
+        ├── forms.py        # Aqui fica o formulário PessoaForm
+        └── templates/
+            └── core/       # Aqui ficam os templates da aplicação "core"
+                ├── adicionar_pessoa.html
+                └── sucesso.html
+        └── static/         # Pasta para arquivos estáticos (CSS, JS, imagens)
+```
+
+### Passo 1: Onde colocar os templates
+
+Você deve colocar os templates dentro da pasta `templates/core/` dentro da sua aplicação `core`. Como você já mencionou, o caminho seria:
+
+```
+core/templates/core/adicionar_pessoa.html
+core/templates/core/sucesso.html
+```
+
+### Passo 2: Configurando os arquivos estáticos (se necessário)
+
+Se você precisar usar arquivos estáticos (como CSS, imagens ou JavaScript), crie uma pasta chamada `static/` dentro da pasta `core/`, assim:
+
+```
+core/static/
+    └── core/
+        └── style.css     # Por exemplo, se você tiver arquivos CSS
+```
+
+### Passo 3: Configurando URLs no `projeto1/urls.py`
+
+No arquivo `projeto1/urls.py`, você precisará incluir as URLs do aplicativo `core`. O código ficaria assim:
+
+```python
+# projeto1/urls.py
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('core.urls')),  # Incluindo as URLs da aplicação core
+]
+```
+
+### Passo 4: Configurando as URLs na aplicação `core`
+
+Dentro da aplicação `core`, crie o arquivo `urls.py` (se ainda não existir) para mapear as URLs para suas views. O arquivo `core/urls.py` deve ficar assim:
+
+```python
+# core/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('adicionar/', views.adicionar_pessoa, name='adicionar_pessoa'),
+    path('sucesso/', views.sucesso, name='sucesso'),
+]
+```
+
+### Passo 5: Certificando-se de que o Django está configurado para encontrar os templates
+
+No arquivo de configurações do seu projeto, `projeto1/settings.py`, adicione ou verifique se a configuração `TEMPLATES` está corretamente configurada para que o Django saiba onde procurar os templates.
+
+Aqui está um exemplo do bloco `TEMPLATES` que deve estar no seu `settings.py`:
+
+```python
+# projeto1/settings.py
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            # A pasta templates dentro de cada aplicativo será automaticamente procurada.
+            BASE_DIR / 'templates',
+        ],
+        'APP_DIRS': True,  # Habilita o uso de templates dentro de apps
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+```
+
+Essa configuração permite que o Django procure templates em cada aplicativo (com o `APP_DIRS: True`) e também na pasta `templates` dentro do diretório base do seu projeto.
+
+### Passo 6: Rodando as migrações
+
+Sempre que você adicionar ou modificar os modelos, não se esqueça de rodar as migrações. No terminal, execute os seguintes comandos para garantir que o banco de dados está atualizado com os novos modelos:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### Resumo
+
+1. Coloque os templates na pasta `core/templates/core/` (ou seja, dentro de `core/templates/` com um subdiretório chamado `core`).
+2. Configure as URLs no arquivo `projeto1/urls.py` para incluir as URLs da aplicação `core`.
+3. Se necessário, configure os arquivos estáticos no diretório `core/static/`.
+4. Certifique-se de que o Django está configurado para procurar templates em cada aplicação.
+
+Com isso, seu projeto estará bem estruturado, e o Django conseguirá localizar os templates e recursos estáticos, além de processar corretamente as URLs e o banco de dados.
