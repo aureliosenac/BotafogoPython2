@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Usuario{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="text-align text-center m-4">
+
+            <h1>REGISTRAR USUÁRIO</h1>
+            <form method="POST">
+                {% csrf_token %}
+                <label for="usuario">Nome de Usuário</label>
+                <input type="text" class="form-control" id="usuario" name="usuario">
+
+                <label for="senha">Senha</label>
+                <input type="password" class="form-control" id="senha" name="senha">
+
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </form>
+        </div>
+     </main>   
+
+{% endblock %}
