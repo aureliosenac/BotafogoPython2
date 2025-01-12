@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - TechNova</title>
+    <style>
+        /* Definir o estilo para o corpo da página */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: justify; /* Justifica o texto */
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        /* Alinhar o título principal no centro */
+        h1 {
+            text-align: center;
+        }
+
+        /* Estilo para as seções */
+        section {
+            margin: 20px 0;
+        }
+
+        /* Estilo para os parágrafos */
+        p {
+            line-height: 1.6;
+        }
+
+        /* Estilo para links */
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        /* Modificar a cor do link quando o mouse passa por cima */
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bem-vindo a TechNova</h1>
+
+    {% if user.is_authenticated %}
+        <p>Olá, {{ user.username }}!</p>
+        <a href="{% url 'logout' %}">Sair</a>
+        <br>
+        <a href="{% url 'cadastro_produto' %}">Cadastrar produto</a> | 
+        <a href="{% url 'listar_produtos' %}">Lista produtos</a>
+    {% else %}
+		<p>Para entrar no sistema, faça login ou se registre:</p>
+        <a href="{% url 'registro' %}">Registrar</a> | <a href="{% url 'login' %}">Entrar</a>
+    {% endif %}
+
+    <p>A TechNova é uma empresa especializada em soluções tecnológicas inovadoras, com um portfólio de produtos incluindo serviços e cursos para transformar a sua experiência digital.</p>
+        
+    <section>
+        <h2>Missão</h2>
+        <p>Nosso objetivo é fornecer soluções eficazes para empresas e indivíduos, com foco em resultados de qualidade e inovação.</p>
+    </section>
+
+</body>   
+</html>
